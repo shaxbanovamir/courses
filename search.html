@@ -1,15 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Поиск курсов — Librarium</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://accounts.google.com/gsi/client" async></script>
 </head>
 <body>
-    <h1>Search Page</h1>
-    <form action="/search" method="GET">
-        <input type="text" name="query" placeholder="Search...">
-        <button type="submit">Search</button>
-    </form>
+
+    <div class="top-bar">
+        <div class="top-bar-content">
+            <div class="logo">📚 Librarium</div>
+            <div class="top-nav">
+                <a href="index.html">Главная</a>
+                <a href="index.html#courses">Курсы</a>
+                <a href="index.html#about">О компании</a>
+                <a href="index.html#services">Услуги</a>
+                <a href="index.html#contact">Контакты</a>
+            </div>
+            <div class="profile-area">
+                <a href="profile.html" class="profile-icon-btn">👤 Профиль</a>
+                <div id="login-container"><div id="google-login-btn"></div></div>
+                <div id="user-info" style="display: none; align-items: center; gap: 10px;">
+                    <img id="user-avatar" width="32" height="32" style="border-radius: 50%;">
+                    <span id="user-name"></span>
+                    <button onclick="logout()" class="logout-btn">Выйти</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="search-results-section">
+        <div class="search-header">
+            <h1>Результаты поиска: <span id="searchQueryDisplay"></span></h1>
+            <div class="search-again">
+                <input type="text" id="search-input-search" placeholder="🔍 Новый поиск...">
+                <button id="search-btn-search" class="search-btn">Искать</button>
+                <a href="index.html" class="back-btn">← На главную</a>
+            </div>
+        </div>
+        <div class="filters-strip search-filters">
+            <div class="filters-container" id="searchFiltersContainer">
+                <button class="filter-btn active" data-category="all">Все</button>
+                <button class="filter-btn" data-category="programming">💻 Программирование</button>
+                <button class="filter-btn" data-category="web">🌐 Веб-разработка</button>
+                <button class="filter-btn" data-category="python">🐍 Python</button>
+                <button class="filter-btn" data-category="js">⚡ JavaScript</button>
+                <button class="filter-btn" data-category="cpp">⚙️ C++</button>
+                <button class="filter-btn" data-category="csharp">🎯 C#</button>
+                <button class="filter-btn" data-category="design">🎨 Дизайн</button>
+                <button class="filter-btn" data-category="marketing">📊 Маркетинг</button>
+                <button class="filter-btn price-free" data-price="free">🆓 Бесплатные</button>
+                <button class="filter-btn price-paid" data-price="paid">💎 Платные</button>
+            </div>
+        </div>
+        <div class="courses-grid" id="searchResultsContainer"></div>
+    </section>
+
+    <footer><p>© 2025 Librarium</p></footer>
+    <script src="script.js"></script>
 </body>
 </html>
