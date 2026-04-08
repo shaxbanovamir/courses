@@ -1,10 +1,284 @@
-<!-- Index HTML Content -->
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Index Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Librarium — онлайн-курсы с поддержкой</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://accounts.google.com/gsi/client" async></script>
 </head>
 <body>
-    <h1>Welcome to the Course Platform</h1>
+
+    <!-- Верхняя полоска с навигацией -->
+    <div class="top-bar" style="padding: 0.5rem 2rem;">
+        <div class="top-bar-content">
+            <div class="logo" style="font-size: 1.1rem;">📚 Librarium</div>
+            <div class="top-nav">
+                <a href="index.html">Главная</a>
+                <a href="courses.html">Курсы</a>
+                <a href="#about">О компании</a>
+                <a href="#services">Услуги</a>
+                <a href="#contact">Контакты</a>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div id="login-container">
+                    <div id="google-login-btn"></div>
+                </div>
+                <div id="user-info" style="display: none; align-items: center; gap: 10px;">
+                    <span id="user-name" style="color: white; cursor: pointer;" onclick="window.location.href='profile.html'"></span>
+                    <img id="user-avatar" width="32" height="32" style="border-radius: 50%; cursor: pointer;" onclick="window.location.href='profile.html'">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Герой-секция с анимированным фоном из кода -->
+    <section class="hero">
+        <div class="code-background" id="codeBackground"></div>
+        <div class="hero-content">
+            <h1>Учись с Librarium</h1>
+            <p>Курсы от лучших авторов. Подбор курса под ваши цели.</p>
+<div class="search-wrapper">
+    <input type="text" id="search-input" placeholder="🔍 Поиск курсов по названию, автору или тегу...">
+    <button id="filterToggleBtn" class="filter-toggle-btn">Фильтр</button>
+</div>
+        </div>
+    </section>
+    <!-- Выпадающая панель фильтров -->
+<div id="filterDropdown" class="filter-dropdown" style="display: none;">
+    <div class="filter-dropdown-columns">
+        <div class="filter-column">
+            <h4>Категории</h4>
+            <button class="filter-dropdown-btn" data-category="all">Все</button>
+            <button class="filter-dropdown-btn" data-category="programming">💻 Программирование</button>
+            <button class="filter-dropdown-btn" data-category="web">🌐 Веб-разработка</button>
+            <button class="filter-dropdown-btn" data-category="python">🐍 Python</button>
+            <button class="filter-dropdown-btn" data-category="js">⚡ JavaScript</button>
+            <button class="filter-dropdown-btn" data-category="cpp">⚙️ C++</button>
+            <button class="filter-dropdown-btn" data-category="csharp">🎯 C#</button>
+            <button class="filter-dropdown-btn" data-category="design">🎨 Дизайн</button>
+            <button class="filter-dropdown-btn" data-category="marketing">📊 Маркетинг</button>
+        </div>
+        <div class="filter-column">
+            <h4>Цена</h4>
+            <button class="filter-dropdown-btn" data-price="free">🆓 Бесплатные</button>
+            <button class="filter-dropdown-btn" data-price="paid">💎 Платные</button>
+        </div>
+    </div>
+</div>
+    <!-- Фильтры -->
+
+
+    <!-- Виджеты-категории -->
+<div class="widgets-section">
+
+        <div class="widgets-wrapper">
+            <button class="scroll-btn left" id="scrollLeft">◀</button>
+            <div class="widgets-grid" id="widgetsGrid">
+                <div class="widget-card" data-category="programming">
+                    <div class="widget-image programming-bg"><span class="widget-emoji">💻</span></div>
+                    <h3>Программирование</h3>
+                    <p>15 курсов</p>
+                </div>
+                <div class="widget-card" data-category="web">
+                    <div class="widget-image web-bg"><span class="widget-emoji">🌐</span></div>
+                    <h3>Веб-разработка</h3>
+                    <p>12 курсов</p>
+                </div>
+                <div class="widget-card" data-category="python">
+                    <div class="widget-image python-bg"><span class="widget-emoji">🐍</span></div>
+                    <h3>Python</h3>
+                    <p>10 курсов</p>
+                </div>
+                <div class="widget-card" data-category="js">
+                    <div class="widget-image web-bg"><span class="widget-emoji">⚡</span></div>
+                    <h3>JavaScript</h3>
+                    <p>9 курсов</p>
+                </div>
+                <div class="widget-card" data-category="cpp">
+                    <div class="widget-image programming-bg"><span class="widget-emoji">⚙️</span></div>
+                    <h3>C++</h3>
+                    <p>8 курсов</p>
+                </div>
+                <div class="widget-card" data-category="csharp">
+                    <div class="widget-image programming-bg"><span class="widget-emoji">🎯</span></div>
+                    <h3>C#</h3>
+                    <p>7 курсов</p>
+                </div>
+                <div class="widget-card" data-category="design">
+                    <div class="widget-image design-bg"><span class="widget-emoji">🎨</span></div>
+                    <h3>Дизайн</h3>
+                    <p>6 курсов</p>
+                </div>
+                <div class="widget-card" data-category="marketing">
+                    <div class="widget-image design-bg"><span class="widget-emoji">📊</span></div>
+                    <h3>Маркетинг</h3>
+                    <p>6 курсов</p>
+                </div>
+                <div class="widget-card" data-category="ai">
+                    <div class="widget-image python-bg"><span class="widget-emoji">🤖</span></div>
+                    <h3>AI & ML</h3>
+                    <p>5 курсов</p>
+                </div>
+                <div class="widget-card" data-category="mobile">
+                    <div class="widget-image web-bg"><span class="widget-emoji">📱</span></div>
+                    <h3>Мобильная разработка</h3>
+                    <p>5 курсов</p>
+                </div>
+                <div class="widget-card" data-category="devops">
+                    <div class="widget-image programming-bg"><span class="widget-emoji">🚀</span></div>
+                    <h3>DevOps</h3>
+                    <p>4 курса</p>
+                </div>
+                <div class="widget-card" data-category="data">
+                    <div class="widget-image python-bg"><span class="widget-emoji">📈</span></div>
+                    <h3>Data Science</h3>
+                    <p>5 курсов</p>
+                </div>
+            </div>
+            <button class="scroll-btn right" id="scrollRight">▶</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- Секция "О компании" как на первой фотке -->
+    <section id="about" class="about-company">
+        <div class="about-container">
+            <h2>Сборные грузоперевозки с заботой о вашем обучении</h2>
+            <p class="about-subtitle">Librarium помогает студентам и профессионалам осваивать новые навыки уже больше 3 лет. Мы специализируемся на подборе качественных бесплатных курсов по программированию, дизайну и маркетингу.</p>
+            <div class="about-features">
+                <div class="feature">
+                    <div class="feature-icon">📚</div>
+                    <h3>Более 50 курсов</h3>
+                    <p>От основ до продвинутых тем</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⭐</div>
+                    <h3>Надёжность</h3>
+                    <p>Проверенные авторы и источники</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">💰</div>
+                    <h3>Честные цены</h3>
+                    <p>Много бесплатных курсов, платные — по лучшим условиям</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Сроки и результат</h3>
+                    <p>Быстрый прогресс с нашими подборками</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция "Наши услуги" как на второй фотке -->
+    <section id="services" class="services-section">
+        <div class="services-container">
+            <h2>Наши услуги</h2>
+            <p class="services-subtitle">Всё для вашего комфортного обучения</p>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">⚡</div>
+                    <h3>Быстрый подбор курса</h3>
+                    <p>Менеджер подберёт курс под ваши цели за 15 минут</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">📞</div>
+                    <h3>Консультация</h3>
+                    <p>Помогаем с выбором направления обучения</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔒</div>
+                    <h3>Гарантии качества</h3>
+                    <p>Только проверенные курсы от лучших авторов</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🏠</div>
+                    <h3>Доступ 24/7</h3>
+                    <p>Учитесь в любое время из любой точки</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">🔔</div>
+                    <h3>Уведомления</h3>
+                    <p>Новинки курсов — сразу на почту</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon">💳</div>
+                    <h3>Удобная оплата</h3>
+                    <p>Для платных курсов — любые способы оплаты</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Форма подбора персонального курса -->
+    <section id="personal-course" class="personal-form-section">
+        <div class="form-container">
+            <h2>🎓 Подберите персональный курс</h2>
+            <p>Расскажите о своих предпочтениях, и мы подберём идеальный курс для вас!</p>
+            <form id="courseRequestForm">
+                <div class="form-group">
+                    <input type="text" id="userName" placeholder="Ваше имя" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="userEmail" placeholder="Email для ответа" required>
+                </div>
+                <div class="form-group">
+                    <select id="userLevel">
+                        <option value="">Уровень подготовки</option>
+                        <option value="beginner">Начинающий</option>
+                        <option value="middle">Средний</option>
+                        <option value="advanced">Продвинутый</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select id="userInterest">
+                        <option value="">Интересующее направление</option>
+                        <option value="programming">Программирование</option>
+                        <option value="web">Веб-разработка</option>
+                        <option value="python">Python</option>
+                        <option value="js">JavaScript</option>
+                        <option value="design">Дизайн</option>
+                        <option value="marketing">Маркетинг</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <textarea id="userMessage" rows="3" placeholder="Дополнительные пожелания..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Отправить заявку</button>
+            </form>
+            <div id="formStatus" class="form-status"></div>
+        </div>
+    </section>
+
+    <!-- Контакты -->
+    <section id="contact" class="contact-section">
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>📞 Свяжитесь с нами</h3>
+                <p><strong>Телефон:</strong> <a href="tel:+79667419321">+7 (966) 741-93-21</a></p>
+                <p><strong>Email:</strong> <a href="mailto:shaxbanovamir@gmail.com">shaxbanovamir@gmail.com</a></p>
+                <p><strong>Главный офис:</strong> г. Махачкала, ул. Дзержинского 12/1</p>
+                <p><strong>Режим работы:</strong> Пн-Пт: 9:00–18:00 · Сб: 10:00–14:00</p>
+            </div>
+            <div class="contact-map">
+                <h3>📍 Мы на карте</h3>
+                <div class="map-placeholder">
+                    <iframe src="https://yandex.ru/map-widget/v1/?ll=47.498142%2C42.979643&z=16&pt=47.498142,42.979643,pm2rdl" width="100%" height="200" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2025 Librarium — все курсы предоставлены в открытом доступе их авторами.</p>
+        <p>Нажимая на кнопку, вы соглашаетесь с <a href="#">политикой обработки персональных данных</a></p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </body>
 </html>
