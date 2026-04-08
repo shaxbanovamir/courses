@@ -1,13 +1,397 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Courses</title>
+    <title>Все курсы — Librarium</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://accounts.google.com/gsi/client" async></script>
+    <style>
+        .courses-page {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            gap: 2rem;
+            min-height: 80vh;
+        }
+        .courses-sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+        }
+        .courses-sidebar h3 {
+            margin-bottom: 1rem;
+            color: #581c87;
+        }
+        .filter-group {
+            margin-bottom: 1.5rem;
+        }
+        .filter-group h4 {
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+        }
+        .filter-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .filter-checkbox input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #6b21a5;
+        }
+        .reset-filters-btn {
+            width: 100%;
+            background: #f5f3f7;
+            border: 1px solid #e5e7eb;
+            padding: 0.6rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        .courses-content {
+            flex: 1;
+        }
+        .courses-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .courses-header h2 {
+            color: #581c87;
+        }
+        .search-mini {
+            width: 280px;
+        }
+        .search-mini input {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 2rem;
+            outline: none;
+        }
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .course-card {
+            background: white;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .course-image {
+            height: 100px;
+            background: linear-gradient(135deg, #9333ea, #581c87);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+        .course-content {
+            padding: 1rem;
+        }
+        .course-title {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+        .course-author {
+            font-size: 0.7rem;
+            color: #6b7280;
+        }
+        .course-category {
+            font-size: 0.7rem;
+            color: #6b21a5;
+            margin: 0.25rem 0;
+        }
+        .course-price {
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+        .price-free-tag { color: #10b981; }
+        .price-paid-tag { color: #f59e0b; }
+        .course-description {
+            font-size: 0.75rem;
+            color: #4b5563;
+            margin-bottom: 0.75rem;
+        }
+        .btn-subscribe {
+            background: #6b21a5;
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-subscribed {
+            background: #10b981;
+        }
+        .unsubscribe-btn {
+            background: #ef4444;
+            margin-top: 0.5rem;
+        }
+        .empty-courses-message {
+            text-align: center;
+            padding: 3rem;
+            background: white;
+            border-radius: 1rem;
+        }
+        @media (max-width: 768px) {
+            .courses-page { flex-direction: column; }
+            .courses-sidebar { width: 100%; position: static; }
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Our Courses</h1>
-    <p>Explore a variety of courses available for you.</p>
-    <!-- Add more content here -->
+    <div class="top-bar" style="padding: 0.5rem 2rem;">
+        <div class="top-bar-content">
+            <div class="logo" style="font-size: 1.1rem;">📚 Librarium</div>
+            <div class="top-nav">
+                <a href="index.html">Главная</a>
+                <a href="courses.html">Курсы</a>
+                <a href="index.html#about">О компании</a>
+                <a href="index.html#services">Услуги</a>
+                <a href="index.html#contact">Контакты</a>
+            </div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div id="login-container">
+                    <div id="google-login-btn"></div>
+                </div>
+                <div id="user-info" style="display: none; align-items: center; gap: 10px;">
+                    <span id="user-name" style="color: white; cursor: pointer;" onclick="window.location.href='profile.html'"></span>
+                    <img id="user-avatar" width="32" height="32" style="border-radius: 50%; cursor: pointer;" onclick="window.location.href='profile.html'">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="courses-page">
+        <div class="courses-sidebar">
+            <h3>📂 Фильтры</h3>
+            <div class="filter-group">
+                <h4>Категории</h4>
+                <label class="filter-checkbox"><input type="checkbox" data-category="all" checked> Все (52 курса)</label>
+                <label class="filter-checkbox"><input type="checkbox" data-category="programming"> 💻 Программирование</label>
+                <label class="filter-checkbox"><input type="checkbox" data-category="web"> 🌐 Веб-разработка</label>
+                <label class="filter-checkbox"><input type="checkbox" data-category="python"> 🐍 Python</label>
+                <label class="filter-checkbox"><input type="checkbox" data-category="js"> ⚡ JavaScript</label>
+                <label class="filter-checkbox"><input type="checkbox" data-category="cpp"> ⚙️ C++</label>
+                <label class="filter-checkbox"><input type="checkbox" data-category="csharp"> 🎯 C#</label>
+                <label class="filter-checkbox"><input type="checkbox" data-category="design"> 🎨 Дизайн</label>
+                <label class="filter-checkbox"><input type="checkbox" data-category="marketing"> 📊 Маркетинг</label>
+                <label class="filter-checkbox"><input type="checkbox" data-category="ai"> 🤖 AI & ML</label>
+                <label class="filter-checkbox"><input type="checkbox" data-category="mobile"> 📱 Мобильная разработка</label>
+                <label class="filter-checkbox"><input type="checkbox" data-category="devops"> 🚀 DevOps</label>
+                <label class="filter-checkbox"><input type="checkbox" data-category="data"> 📈 Data Science</label>
+            </div>
+            <div class="filter-group">
+                <h4>Цена</h4>
+                <label class="filter-checkbox"><input type="checkbox" data-price="free"> 🆓 Бесплатные</label>
+                <label class="filter-checkbox"><input type="checkbox" data-price="paid"> 💎 Платные</label>
+            </div>
+            <button id="resetFiltersBtn" class="reset-filters-btn">Сбросить все</button>
+        </div>
+        <div class="courses-content">
+            <div class="courses-header">
+                <h2>📖 Все курсы</h2>
+                <div class="search-mini">
+                    <input type="text" id="coursesSearchInput" placeholder="🔍 Поиск...">
+                </div>
+            </div>
+            <div id="allCoursesContainer" class="courses-grid"></div>
+        </div>
+    </div>
+
+    <footer style="background: #1f2937; color: #9ca3af; text-align: center; padding: 2rem; margin-top: 2rem;">
+        <p>© 2025 Librarium</p>
+    </footer>
+
+    <script>
+        // ВСЕ КУРСЫ (52 штуки)
+        const courses = [
+            { id: 1, title: "Основы программирования", author: "Иван Иванов", description: "Алгоритмы, структуры данных, основы ООП.", icon: "💻", category: "programming", price: "free" },
+            { id: 2, title: "Python для начинающих", author: "Елена Козлова", description: "Основы Python: переменные, циклы, функции.", icon: "🐍", category: "python", price: "free" },
+            { id: 3, title: "Продвинутый Python", author: "Дмитрий Соколов", description: "Декораторы, генераторы, асинхронность.", icon: "🐍", category: "python", price: "paid" },
+            { id: 4, title: "JavaScript с нуля", author: "Мария Петрова", description: "ES6+, асинхронность, DOM, Fetch API.", icon: "⚡", category: "js", price: "free" },
+            { id: 5, title: "C++ для начинающих", author: "Алексей Смирнов", description: "Указатели, ссылки, классы.", icon: "⚙️", category: "cpp", price: "free" },
+            { id: 6, title: "C# и .NET", author: "Ольга Новикова", description: "LINQ, асинхронность, создание приложений.", icon: "🎯", category: "csharp", price: "paid" },
+            { id: 7, title: "Java для начинающих", author: "Антон Белов", description: "ООП, коллекции, многопоточность.", icon: "☕", category: "programming", price: "free" },
+            { id: 8, title: "Go язык программирования", author: "Сергей Крылов", description: "Горутины, каналы, веб-серверы.", icon: "🔵", category: "programming", price: "paid" },
+            { id: 9, title: "Rust для безопасного кода", author: "Денис Волков", description: "Заимствования, lifetimes.", icon: "🦀", category: "programming", price: "paid" },
+            { id: 10, title: "Kotlin для Android", author: "Екатерина Мороз", description: "Создание приложений под Android.", icon: "📱", category: "mobile", price: "free" },
+            { id: 11, title: "HTML и CSS полный курс", author: "Иван Иванов", description: "Flexbox, Grid, адаптивная вёрстка.", icon: "📘", category: "web", price: "free" },
+            { id: 12, title: "React для начинающих", author: "Алексей Смирнов", description: "Компоненты, хуки, роутинг.", icon: "⚛️", category: "web", price: "free" },
+            { id: 13, title: "Node.js backend", author: "Максим Фёдоров", description: "Express, REST API, MongoDB.", icon: "🟢", category: "web", price: "paid" },
+            { id: 14, title: "Vue.js с нуля", author: "Анна Морозова", description: "Компоненты, Vuex, роутинг.", icon: "💚", category: "web", price: "free" },
+            { id: 15, title: "Angular полный курс", author: "Павел Семёнов", description: "TypeScript, RxJS.", icon: "🅰️", category: "web", price: "paid" },
+            { id: 16, title: "Next.js с нуля", author: "Анна Морозова", description: "SSR, SSG, API routes.", icon: "▲", category: "web", price: "free" },
+            { id: 17, title: "Tailwind CSS", author: "Иван Иванов", description: "Утилитарные классы.", icon: "🎨", category: "web", price: "free" },
+            { id: 18, title: "GraphQL", author: "Максим Фёдоров", description: "Apollo Client, запросы.", icon: "📊", category: "web", price: "paid" },
+            { id: 19, title: "Машинное обучение", author: "Андрей Ветров", description: "Scikit-learn, pandas.", icon: "🤖", category: "ai", price: "free" },
+            { id: 20, title: "Глубокое обучение", author: "Елена Соколова", description: "TensorFlow, Keras.", icon: "🧠", category: "ai", price: "paid" },
+            { id: 21, title: "ChatGPT и LLM", author: "Дмитрий Орлов", description: "Промпт-инжиниринг.", icon: "💬", category: "ai", price: "free" },
+            { id: 22, title: "Компьютерное зрение", author: "Мария Соболева", description: "OpenCV, распознавание.", icon: "👁️", category: "ai", price: "paid" },
+            { id: 23, title: "NLP для всех", author: "Андрей Ветров", description: "Обработка текста.", icon: "📝", category: "ai", price: "free" },
+            { id: 24, title: "React Native", author: "Екатерина Мороз", description: "Кроссплатформенные приложения.", icon: "📱", category: "mobile", price: "free" },
+            { id: 25, title: "Flutter", author: "Игорь Крылов", description: "Dart, виджеты.", icon: "🦋", category: "mobile", price: "free" },
+            { id: 26, title: "Swift и iOS", author: "Ольга Новикова", description: "UIKit, SwiftUI.", icon: "🍎", category: "mobile", price: "paid" },
+            { id: 27, title: "Android Studio", author: "Павел Семёнов", description: "Kotlin, Jetpack Compose.", icon: "🤖", category: "mobile", price: "free" },
+            { id: 28, title: "Docker", author: "Сергей Крылов", description: "Контейнеризация.", icon: "🐳", category: "devops", price: "free" },
+            { id: 29, title: "Kubernetes", author: "Антон Белов", description: "Оркестрация.", icon: "☸️", category: "devops", price: "paid" },
+            { id: 30, title: "CI/CD pipelines", author: "Денис Волков", description: "GitLab CI, GitHub Actions.", icon: "⚙️", category: "devops", price: "free" },
+            { id: 31, title: "Linux для админов", author: "Сергей Крылов", description: "Bash, systemd.", icon: "🐧", category: "devops", price: "free" },
+            { id: 32, title: "Terraform", author: "Антон Белов", description: "Infrastructure as Code.", icon: "🏗️", category: "devops", price: "paid" },
+            { id: 33, title: "SQL для анализа", author: "Андрей Ветров", description: "SELECT, JOIN, окна.", icon: "🗄️", category: "data", price: "free" },
+            { id: 34, title: "Data Visualization", author: "Мария Соболева", description: "Tableau, Power BI.", icon: "📊", category: "data", price: "free" },
+            { id: 35, title: "Big Data", author: "Дмитрий Орлов", description: "Spark, Hadoop.", icon: "💾", category: "data", price: "paid" },
+            { id: 36, title: "Python for Data Science", author: "Андрей Ветров", description: "NumPy, pandas.", icon: "🐍", category: "data", price: "free" },
+            { id: 37, title: "Figma", author: "Татьяна Васильева", description: "Автолейауты, прототипы.", icon: "🎨", category: "design", price: "free" },
+            { id: 38, title: "UI/UX дизайн", author: "Сергей Павлов", description: "Юзабилити, интерфейсы.", icon: "✨", category: "design", price: "paid" },
+            { id: 39, title: "Adobe Photoshop", author: "Анна Морозова", description: "Ретушь, коллажи.", icon: "🎨", category: "design", price: "free" },
+            { id: 40, title: "Adobe Illustrator", author: "Татьяна Васильева", description: "Векторная графика.", icon: "✏️", category: "design", price: "free" },
+            { id: 41, title: "Blender 3D", author: "Сергей Павлов", description: "Моделирование.", icon: "🧊", category: "design", price: "paid" },
+            { id: 42, title: "SMM с нуля", author: "Юлия Ковалёва", description: "Стратегия, контент.", icon: "📱", category: "marketing", price: "free" },
+            { id: 43, title: "SEO оптимизация", author: "Дмитрий Орлов", description: "Ключевые слова.", icon: "🔍", category: "marketing", price: "paid" },
+            { id: 44, title: "Таргетолог", author: "Юлия Ковалёва", description: "Настройка рекламы.", icon: "🎯", category: "marketing", price: "free" },
+            { id: 45, title: "Email маркетинг", author: "Анна Морозова", description: "Рассылки.", icon: "📧", category: "marketing", price: "free" },
+            { id: 46, title: "Контекстная реклама", author: "Дмитрий Орлов", description: "Яндекс.Директ.", icon: "💵", category: "marketing", price: "paid" },
+            { id: 47, title: "Git и GitHub", author: "Денис Волков", description: "Контроль версий.", icon: "📚", category: "programming", price: "free" },
+            { id: 48, title: "Английский для IT", author: "Елена Козлова", description: "Технический английский.", icon: "🇬🇧", category: "programming", price: "free" },
+            { id: 49, title: "Собеседование в IT", author: "Иван Иванов", description: "Подготовка к интервью.", icon: "🎤", category: "programming", price: "free" },
+            { id: 50, title: "Блокчейн и Web3", author: "Антон Белов", description: "Смарт-контракты.", icon: "⛓️", category: "programming", price: "paid" },
+            { id: 51, title: "Кибербезопасность", author: "Сергей Крылов", description: "Сети, шифрование.", icon: "🔒", category: "programming", price: "free" },
+            { id: 52, title: "Алгоритмы", author: "Дмитрий Соколов", description: "Сортировки, деревья.", icon: "🧩", category: "programming", price: "free" }
+        ];
+
+        function getSubscribed() { return JSON.parse(localStorage.getItem("subscribedCourses") || "[]"); }
+        function saveSubscribed(subs) { localStorage.setItem("subscribedCourses", JSON.stringify(subs)); }
+        function isSubscribed(id) { return getSubscribed().includes(id); }
+        function subscribeToCourse(id) {
+            let subs = getSubscribed();
+            if (!subs.includes(id)) subs.push(id);
+            else subs = subs.filter(i => i !== id);
+            saveSubscribed(subs);
+            renderAllCourses();
+        }
+        function getCategoryName(cat) {
+            const names = { programming:"Программирование", web:"Веб-разработка", python:"Python", js:"JavaScript", cpp:"C++", csharp:"C#", design:"Дизайн", marketing:"Маркетинг", ai:"AI & ML", mobile:"Мобильная разработка", devops:"DevOps", data:"Data Science" };
+            return names[cat] || cat;
+        }
+        function renderAllCourses() {
+            const container = document.getElementById("allCoursesContainer");
+            if (!container) return;
+            let filtered = [...courses];
+            const selectedCats = [], selectedPrices = [];
+            document.querySelectorAll('[data-category]').forEach(cb => { if(cb.checked && cb.dataset.category !== "all") selectedCats.push(cb.dataset.category); });
+            document.querySelectorAll('[data-price]').forEach(cb => { if(cb.checked) selectedPrices.push(cb.dataset.price); });
+            if(selectedCats.length) filtered = filtered.filter(c => selectedCats.includes(c.category));
+            if(selectedPrices.length) filtered = filtered.filter(c => selectedPrices.includes(c.price));
+            const search = document.getElementById("coursesSearchInput");
+            if(search && search.value.trim()) {
+                const term = search.value.toLowerCase();
+                filtered = filtered.filter(c => c.title.toLowerCase().includes(term));
+            }
+            if(filtered.length === 0) { container.innerHTML = `<div class="empty-courses-message">😢 Курсов не найдено</div>`; return; }
+            container.innerHTML = filtered.map(c => `
+                <div class="course-card">
+                    <div class="course-image">${c.icon}</div>
+                    <div class="course-content">
+                        <h3 class="course-title">${c.title}</h3>
+                        <div class="course-author">👨‍🏫 ${c.author}</div>
+                        <div class="course-category">📁 ${getCategoryName(c.category)}</div>
+                        <div class="course-price ${c.price === 'free' ? 'price-free-tag' : 'price-paid-tag'}">${c.price === 'free' ? '🆓 Бесплатно' : '💎 Платный'}</div>
+                        <p class="course-description">${c.description}</p>
+                        <button class="btn-subscribe ${isSubscribed(c.id) ? 'btn-subscribed' : ''}" onclick="subscribeToCourse(${c.id})">${isSubscribed(c.id) ? '✓ Записан' : '📚 Записаться'}</button>
+                        ${isSubscribed(c.id) ? `<button class="btn-subscribe unsubscribe-btn" onclick="subscribeToCourse(${c.id})">❌ Отписаться</button>` : ''}
+                    </div>
+                </div>
+            `).join("");
+        }
+        function setupFilters() {
+            document.querySelectorAll('.filter-checkbox input').forEach(cb => cb.addEventListener('change', () => renderAllCourses()));
+            document.getElementById("resetFiltersBtn")?.addEventListener('click', () => {
+                document.querySelectorAll('.filter-checkbox input').forEach(cb => cb.checked = false);
+                document.querySelector('[data-category="all"]').checked = true;
+                const search = document.getElementById("coursesSearchInput");
+                if(search) search.value = '';
+                renderAllCourses();
+            });
+            document.getElementById("coursesSearchInput")?.addEventListener('input', () => renderAllCourses());
+            renderAllCourses();
+        }
+        // Google Auth
+        const GOOGLE_CLIENT_ID = "258425274420-02l9je5d15qkmsr45sa42cq54nn5dub4.apps.googleusercontent.com";
+        function parseJwt(t) { let b=t.split('.')[1]; return JSON.parse(atob(b.replace(/-/g,'+').replace(/_/g,'/'))); }
+        function updateUI(u) {
+            const loginDiv=document.getElementById("login-container"), userDiv=document.getElementById("user-info");
+            if(loginDiv&&userDiv){ loginDiv.style.display="none"; userDiv.style.display="flex"; }
+            const nameSpan=document.getElementById("user-name"), avatar=document.getElementById("user-avatar");
+            if(nameSpan) nameSpan.textContent=u.name;
+            if(avatar) avatar.src=u.picture;
+        }
+        function handleCredentialResponse(r) {
+            const data=parseJwt(r.credential);
+            localStorage.setItem("user",JSON.stringify({name:data.name,email:data.email,picture:data.picture,isLoggedIn:true}));
+            updateUI(data);
+        }
+        function initGoogle() {
+            if(typeof google==='undefined'){ setTimeout(initGoogle,100); return; }
+            google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleCredentialResponse});
+            const btn=document.getElementById("google-login-btn");
+            if(btn) google.accounts.id.renderButton(btn,{theme:"outline",size:"large",text:"signin_with"});
+            const user=JSON.parse(localStorage.getItem("user"));
+            if(user&&user.isLoggedIn) updateUI(user);
+        }
+function applyFiltersFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoryFromUrl = urlParams.get('category');
+    const priceFromUrl = urlParams.get('price');
+    const searchFromUrl = urlParams.get('search');
+    
+    // Снимаем галочку "Все"
+    const allCheckbox = document.querySelector('.filter-checkbox input[data-category="all"]');
+    
+    // Применяем категорию
+    if (categoryFromUrl) {
+        if (allCheckbox) allCheckbox.checked = false;
+        const targetCheckbox = document.querySelector(`.filter-checkbox input[data-category="${categoryFromUrl}"]`);
+        if (targetCheckbox) targetCheckbox.checked = true;
+    }
+    
+    // Применяем фильтр по цене
+    if (priceFromUrl) {
+        if (allCheckbox && !categoryFromUrl) allCheckbox.checked = false;
+        const priceCheckbox = document.querySelector(`.filter-checkbox input[data-price="${priceFromUrl}"]`);
+        if (priceCheckbox) priceCheckbox.checked = true;
+    }
+    
+    // Применяем поисковый запрос
+    if (searchFromUrl) {
+        const searchInput = document.getElementById("coursesSearchInput");
+        if (searchInput) {
+            searchInput.value = decodeURIComponent(searchFromUrl);
+        }
+    }
+    
+    renderAllCourses();
+}
+        document.addEventListener("DOMContentLoaded", () => { initGoogle(); setupFilters(); applyFiltersFromUrl(); });
+    </script>
 </body>
 </html>
